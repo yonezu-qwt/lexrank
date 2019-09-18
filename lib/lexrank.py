@@ -4,15 +4,16 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 class LexRank(object):
-    def __init__(self, sent_vecs, *, alpha=0.85, max_iter=100000):
+    def __init__(self, sent_vecs, *, alpha=0.85, max_iter=100000, threshold=0):
         self.sent_vecs = np.array(sent_vecs)
         self.alpha = alpha
         self.max_iter=max_iter
+        self.threshold=threshold
 
     def calc_score(self):
         print('Calc cosine similarity')
         sim_mat = cosine_similarity(self.sent_vecs)
-        linked_rows, linked_cols = np.where(sim_mat > 0)
+        linked_rows, linked_cols = np.where(sim_mat > self.threshold)
 
         # 類似度グラフの生成
         print('Generate graph')

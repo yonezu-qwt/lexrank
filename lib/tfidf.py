@@ -1,5 +1,4 @@
 import gensim
-from lib.utils import stems
 import numpy as np
 
 class TfidfModel(object):
@@ -30,12 +29,7 @@ class TfidfModel(object):
             使用単語数に上限設定
         '''
 
-        self.docs = []
-        for doc in docs:
-            self.docs.append(stems(doc))
-
-        print(self.docs[:9])
-
+        self.docs = docs
         self.dictionary = gensim.corpora.Dictionary(self.docs)
         self.dictionary.filter_extremes(no_below=no_below, no_above=no_above, keep_n=keep_n)
         self.corpus = list(map(self.dictionary.doc2bow, self.docs))
@@ -50,12 +44,11 @@ class TfidfModel(object):
     # GensimのTFIDFモデルを用いた文のベクトル化
     def toVector(self, docs):
         sparse = []
-        sent_vecs = [self.model[self.dictionary.doc2bow(stems(doc))] for doc in docs]
-        print(sent_vecs[:9])
+        sent_vecs = [self.model[self.dictionary.doc2bow(doc)] for doc in docs]
         for vec in sent_vecs:
             tmp = np.zeros(len(self.dictionary))
             for key, val in vec:
                 tmp[key] = val
-            sparse.append(tmp)
+            sparse.append(tmp.tolist())
 
         return sparse

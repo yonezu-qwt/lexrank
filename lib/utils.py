@@ -1,4 +1,5 @@
 import MeCab
+from gensim import models
 
 
 def _split_to_words(text, to_stem=False):
@@ -41,23 +42,47 @@ def load_data(path):
         lines = f.readlines()
         for line in lines:
             # 実際の会話だけ抽出
-            doc = ''.join(line.split('　')[1:]).strip()
+            line_arr = line.split('　')
+            doc = ''.join(line_arr[1:]).strip()
             doc = doc.replace('。','\n')
             doc = doc.replace('、',' ')
             if doc == '':
                 continue
 
             # 分単位
-            docs_arr = doc.split('\n')
-            docs_arr.pop()
-            data.extend(docs_arr)
+            # docs_arr = doc.split('\n')
+            # docs_arr.pop()
+            # data.extend(docs_arr)
             # 話者単位
-            # data.append(doc)
+            data.append((line_arr[0], doc))
 
     return data
 
 
-def polish_data(data, max_characters=0):
-    data = list(filter(lambda s: len(s) < max_characters, data)) if max_characters else data
+def polish_docs(docs, max_characters=0):
+    data = list(filter(lambda s: len(s) < max_characters, docs)) if max_characters else docs
 
     return data
+
+
+def to_sentence(data):
+    res = []
+    sent_arr = []
+    for label, doc in data:
+        tmp = []
+        sent_arr = doc.split('\n')
+        sent_arr.pop()
+        tmp = [(label, sent) for sent in sent_arr]
+        res.extend(tmp)
+
+    return res
+
+
+class LabeledListSentence(object):
+    def __init__(self, words_list, labels):
+        self.words_list = words_list
+        self.labels = labels
+
+    def __iter__(self):
+        for i, words in enumerate(self.words_list):
+            yield models.doc2vec.LabeledSentence(words, ['%s' % self.labels[i]])
