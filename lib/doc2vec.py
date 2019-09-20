@@ -4,7 +4,7 @@ from lib import utils
 
 
 class Doc2Vec:
-    def __init__(self, *, alpha=0.025, min_alpha=0.00025, min_count=5, sample=1e-5, size=100, iter=20, workers=4):
+    def __init__(self, *, alpha=0.025, min_alpha=0.00025, min_count=5, sample=1e-5, size=100, iter=20, workers=4, train=True):
         self.alpha = alpha
         self.min_alpha = min_alpha
         self.min_count = min_count
@@ -12,8 +12,11 @@ class Doc2Vec:
         self.size = size
         self.iter = iter
         self.workers = workers
-        self.model = None
         self.label = None
+        self.model = None
+        if not(train):
+            # 学習後はモデルをファイルからロード可能
+            self.model = models.Doc2Vec.load('./model/doc2vec/doc2vec.model')
 
     def train(self, docs, label):
         print('Training')
@@ -43,9 +46,14 @@ class Doc2Vec:
         # セーブ
         self.model.save('./model/doc2vec/doc2vec.model')
 
-        # 学習後はモデルをファイルからロード可能
-        # model = models.Doc2Vec.load('./data/doc2vec.model')
 
         # 順番が変わってしまうことがあるので会社リストは学習後に再呼び出し
         self.label = self.model.docvecs.offset2doctag
         print('Done')
+
+    def to_vector(self, docs):
+        sent_vecs = []
+        for doc in docs:
+            sent_vecs.append(self.model.infer_vector(doc))
+
+        return sent_vecs

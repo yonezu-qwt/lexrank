@@ -36,13 +36,14 @@ def get_doc(doc_num):
         # 本文抜き出し
         body = soup.find_all(class_='article_parent')
         doc = body[0].text.translate(non_bmp_map)
-        doc = re.sub('!', "\n", doc)
-        doc = re.sub('！', "\n", doc)
-        doc = re.sub('\?', "\n", doc)
+        doc = re.sub("!", "\n", doc)
+        doc = re.sub("！", "\n", doc)
+        doc = re.sub("\?", "\n", doc)
         # doc = re.sub(r'[︰-＠]', " ", doc)  # 全角記号
         # doc = re.sub(r'[-/:-@\[-`\{-~]', " ", doc)  # 半角記号
-        doc = re.sub('、', " ", doc)
-        doc = re.sub('。', "\n", doc)
+        doc = doc.replace("、", " ")
+        doc = doc.replace("。", "\n")
+        doc = doc.replace("\r", "\n")
 
     return title, doc.strip()
 

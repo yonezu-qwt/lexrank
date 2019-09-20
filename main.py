@@ -37,7 +37,7 @@ if __name__ == '__main__':
     print('Load data')
     # モデルを君れする場合
     if train:
-        data = scraping.scraping(1)
+        data = scraping.scraping(9)
         # to sentence
         if vec_type == 'sentence':
             data = utils.to_sentence(data)
@@ -55,22 +55,22 @@ if __name__ == '__main__':
 
     data_for_summarization = utils.to_sentence([(scraping.get_doc(59))])
     docs_for_summarization = [row[1] for row in data_for_summarization]
-    print(docs_for_summarization[:3])
+    print(docs_for_summarization)
 
     if model == 'tfidf':
         # TFIDFモデル生成
         # GensimのTFIDFモデルを用いた文のベクトル化
         print('===TFIDFモデル生成===')
-        tfidf = TfidfModel(no_below=5, no_above=0.1, keep_n=100000, train=train)
+        tfidf = TfidfModel(no_below=10, no_above=0.1, keep_n=10000, train=train)
         if train:
             tfidf.train(docs_for_train)
-        sent_vecs = tfidf.toVector([stems(doc) for doc in docs_for_summarization])
+        sent_vecs = tfidf.to_vector([stems(doc) for doc in docs_for_summarization])
     elif model == 'doc2vec':
         print('===Doc2Vec===')
-        # doc2vec = Doc2Vec(alpha=0.025, min_count=10, size=200, iter=50, workers=4)
-        # doc2vec.train(docs_for_train, label_docs)
-        # sent_vecs = doc2vec.model.docvecs.doctag_syn0.tolist()
-        exit()
+        doc2vec = Doc2Vec(alpha=0.025, min_count=10, size=100, iter=50, workers=4, train=train)
+        if train:
+            doc2vec.train(docs_for_train, label_docs)
+        sent_vecs = doc2vec.to_vector([stems(doc) for doc in docs_for_summarization])
     else:
         exit()
 
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     print('===要約===')
 
     # インタビュー要約
-    docs_summary = summarize(docs_for_summarization, sent_vecs, sort_type=sort_type, sent_limit=5, threshold=0)
+    docs_summary = summarize(docs_for_summarization, sent_vecs, sort_type=sort_type, sent_limit=5, threshold=0.1)
 
     with open('./result/summary_' + model + '_' + vec_type + '_' + sort_type + '_' + str(datetime.date.today()) + '.txt', 'w') as f:
         for i, docs in enumerate(docs_summary):
