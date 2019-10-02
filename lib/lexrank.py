@@ -13,6 +13,7 @@ class LexRank(object):
     def calc_score(self):
         print('Calc cosine similarity')
         sim_mat = cosine_similarity(self.sent_vecs)
+        print(sim_mat)
         linked_rows, linked_cols = np.where(sim_mat > self.threshold)
 
         # 類似度グラフの生成

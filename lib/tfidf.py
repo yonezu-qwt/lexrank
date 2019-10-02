@@ -15,7 +15,7 @@ class TfidfModel(object):
         tfidfモデル
     '''
 
-    def __init__(self, *, no_below=10, no_above=0.05, keep_n=10000, train=True):
+    def __init__(self, *, no_below=10, no_above=0.05, keep_n=10000):
         '''
         Parameters
         ----------
@@ -35,16 +35,11 @@ class TfidfModel(object):
         self.dictionary = None
         self.model = None
         self.corpus = None
-        if not(train):
-            self.dictionary = gensim.corpora.Dictionary.load_from_text('./model/tfidf/text.dict')
-            self.corpus = gensim.corpora.MmCorpus('./model/tfidf/text.mm')
-            self.model = gensim.models.TfidfModel(self.corpus)
 
-        # corpusへのモデル適用
-        # corpus_tfidf = tfidf.model[tfidf.corpus]
-        # print(len(tfidf.dictionary.token2id))
-        # for doc in corpus_tfidf:
-        #     print(doc)
+    def load_model(self):
+        self.dictionary = gensim.corpora.Dictionary.load_from_text('./model/tfidf/dict_' + str(self.no_below) + '_' + str(int(self.no_above * 100)) + '_' + str(self.keep_n) + '.dict')
+        self.corpus = gensim.corpora.MmCorpus('./model/tfidf/corpus_' + str(self.no_below) + '_' + str(int(self.no_above * 100)) + '_' + str(self.keep_n) + '.mm')
+        self.model = gensim.models.TfidfModel(self.corpus)
 
     # モデル生成
     def train(self, docs):
@@ -52,8 +47,10 @@ class TfidfModel(object):
         self.dictionary.filter_extremes(no_below=self.no_below, no_above=self.no_above, keep_n=self.keep_n)
         self.corpus = list(map(self.dictionary.doc2bow, docs))
         self.model = gensim.models.TfidfModel(self.corpus)
-        self.dictionary.save_as_text('./model/tfidf/text.dict')  # 保存
-        gensim.corpora.MmCorpus.serialize('./model/tfidf/text.mm', self.corpus)  # 保存
+
+        # 保存
+        self.dictionary.save_as_text('./model/tfidf/dict_' + str(self.no_below) + '_' + str(int(self.no_above * 100)) + '_' + str(self.keep_n) + '.dict')
+        gensim.corpora.MmCorpus.serialize('./model/tfidf/corpus_' + str(self.no_below)  + '_' + str(int(self.no_above * 100)) + '_' + str(self.keep_n) + '.mm', self.corpus)
 
     # GensimのTFIDFモデルを用いた文のベクトル化
     def to_vector(self, docs):
