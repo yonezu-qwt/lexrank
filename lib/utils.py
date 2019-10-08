@@ -85,4 +85,6 @@ class LabeledListSentence(object):
 
     def __iter__(self):
         for i, words in enumerate(self.words_list):
-            yield models.doc2vec.LabeledSentence(words, ['%s' % self.labels[i]])
+            # yield models.doc2vec.LabeledSentence(words, ['%s' % self.labels[i]])
+            label = ['%s' % self.labels[i]] if self.labels[i] else []
+            yield models.doc2vec.LabeledSentence(words, label)
