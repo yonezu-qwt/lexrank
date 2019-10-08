@@ -57,7 +57,7 @@ class TfidfModel(object):
         sparse = []
         sent_vecs = [self.model[self.dictionary.doc2bow(doc)] for doc in docs]
         for vec in sent_vecs:
-            tmp = np.zeros(len(self.dictionary))
+            tmp = np.zeros(len(self.dictionary), dtype="float32")
             for key, val in vec:
                 tmp[key] = val
             sparse.append(tmp.tolist())

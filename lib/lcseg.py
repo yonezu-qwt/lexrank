@@ -2,7 +2,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import copy
 
-class TextTiling(object):
+
+class LexicalCohesionSegmentation(object):
     def __init__(self, *, window_size=2, p_limit=0.1, a=0.5, model=False):
         self.window_size = window_size
         self.p_limit = p_limit
@@ -56,7 +57,7 @@ class TextTiling(object):
                 right_window.extend(arr)
 
             # GensimのTFIDFモデルを用いた文のベクトル化
-            self.sim_arr[str(i - 0.5)] = cosine_similarity(self.model.to_vector([left_window]), self.model.to_vector([right_window]))[0][0]
+            self.sim_arr[str(i - 0.5)] = lcf(self.model.to_vector([left_window]), self.model.to_vector([right_window]))
 
-
-
+    def lcf(left, right):
+        if overlaps:
