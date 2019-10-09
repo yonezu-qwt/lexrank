@@ -1,3 +1,7 @@
+LexRank: Graph-based Lexical Centrality as Salience in Text Summarization
+Gunes Erkan, Dragomir R. Radev
+Journal Of Artificial Intelligence Research, Volume 22, pages 457-479, 2004
+
 # Install
 ```
 git clone git@github.com:yonezu-qwt/lexrank.git
@@ -6,9 +10,9 @@ sh setup.sh
 ```
 
 # Usage
-## Scraping
+## Scraping For Pando
 ```
-git checkout -b scraping origin/scraping
+git checkout -b scraping origin/scraping_for_pando
 ```
 ## Train
 ```
