@@ -6,6 +6,10 @@ sh setup.sh
 ```
 
 # Usage
+## Scraping
+```
+git checkout -b scraping origin/scraping
+```
 ## Train
 ```
 # tfidf model
