@@ -9,7 +9,7 @@ def get_docs_num(num):
     docs_num = []
     for i in range(num):
         param = i + 1
-        link = "https://pando.life/qwintet/articles?pageId=" + str(param)
+        link = "" + str(param)
         print(link)
         with request.urlopen(link) as response:
             html = response.read().decode("utf-8")
@@ -22,7 +22,7 @@ def get_docs_num(num):
 
 
 def get_doc(doc_num):
-    link = "https://pando.life/qwintet/article/"
+    link = ""
     with request.urlopen(link + parser.quote_plus(str(doc_num))) as response:
         # BMP外を''に置換するマップ
         non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), '\n')
