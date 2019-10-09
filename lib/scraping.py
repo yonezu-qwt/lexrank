@@ -34,11 +34,15 @@ def get_doc(doc_num):
         title = str(doc_num) + ', ' + h1.text.translate(non_bmp_map).strip()
 
         # 本文抜き出し
+        if not(soup.find_all(class_='article_parent')):
+            return False, False
+
         body = soup.find_all(class_='article_parent')
         doc = body[0].text.translate(non_bmp_map)
         doc = re.sub("!", "\n", doc)
         doc = re.sub("！", "\n", doc)
         doc = re.sub("\?", "\n", doc)
+        doc = re.sub("\u2003", " ", doc)
         # doc = re.sub(r'[︰-＠]', " ", doc)  # 全角記号
         # doc = re.sub(r'[-/:-@\[-`\{-~]', " ", doc)  # 半角記号
         doc = doc.replace("、", " ")
@@ -55,6 +59,9 @@ def scraping(num):
     for doc_num in docs_num:
         print(doc_num)
         title, doc = get_doc(doc_num)
+        if not(title):
+            print("skip")
+            continue
         docs.append((title, doc))
 
     return docs
