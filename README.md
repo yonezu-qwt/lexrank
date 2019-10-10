@@ -4,6 +4,12 @@ Gunes Erkan, Dragomir R. Radev
 
 Journal Of Artificial Intelligence Research, Volume 22, pages 457-479, 2004
 
+# Env
+```
+anaconda3-5.0.1
+gensim 3.8.0
+```
+
 # Install
 ```
 git clone git@github.com:yonezu-qwt/lexrank.git
